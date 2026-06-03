@@ -17,8 +17,8 @@ function normalizeSymbol(symbol: string): string {
     return 'BRK-A';
   }
   
-  // Convert dots to hyphens (common in some systems)
-  return upper.replace(/\./g, '-');
+  // Convert dots and slashes to hyphens (common in some systems, e.g. BTC/USD -> BTC-USD)
+  return upper.replace(/[./]/g, '-');
 }
 
 export async function GET(request: Request) {
