@@ -43,7 +43,7 @@ export default function Dashboard() {
     try {
       const [accountsRes, transactionsRes, positionsRes, historyRes] = await Promise.all([
         fetch('/api/accounts', { cache: 'no-store' }),
-        fetch('/api/transactions?limit=1000', { cache: 'no-store' }),
+        fetch('/api/transactions?all=true', { cache: 'no-store' }),
         fetch('/api/positions', { cache: 'no-store' }),
         fetch('/api/net-worth-history?days=0', { cache: 'no-store' }),
       ]);

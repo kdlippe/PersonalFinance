@@ -9,7 +9,9 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const accountId = searchParams.get('accountId');
-    const limit = parseInt(searchParams.get('limit') || '100');
+    const all = searchParams.get('all') === 'true';
+    const requestedLimit = parseInt(searchParams.get('limit') || '100', 10);
+    const limit = all ? null : (Number.isFinite(requestedLimit) && requestedLimit > 0 ? requestedLimit : 100);
 
     const db = reloadDatabase();
     let transactions = [...db.transactions];
@@ -26,8 +28,10 @@ export async function GET(request: NextRequest) {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    // Limit results
-    transactions = transactions.slice(0, limit);
+    // Limit results unless all transactions are explicitly requested
+    if (limit !== null) {
+      transactions = transactions.slice(0, limit);
+    }
     
     return NextResponse.json(transactions);
   } catch (error) {
