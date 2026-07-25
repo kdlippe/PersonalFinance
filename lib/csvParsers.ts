@@ -487,26 +487,32 @@ export const FidelityPositionsParser: CsvParser = {
   name: 'Fidelity Positions',
   csvType: 'position',
   detect: (headers: string[]) => {
+    const hasHeader = (headerName: string) =>
+      headers.some(h => h.trim().toLowerCase() === headerName.toLowerCase());
+
     // Fidelity positions CSV has these key columns
-    return headers.includes('Account Number') &&
-           headers.includes('Symbol') &&
-           headers.includes('Description') &&
-           headers.includes('Quantity') &&
-           headers.includes('Current Value') &&
-           headers.includes('Cost Basis Total');
+    return hasHeader('Account Number') &&
+           hasHeader('Symbol') &&
+           hasHeader('Description') &&
+           hasHeader('Quantity') &&
+           hasHeader('Current Value') &&
+           hasHeader('Cost Basis Total');
   },
   parse: (headers: string[], values: string[]): ParsedPosition | null => {
     try {
-      const symbolIdx = headers.indexOf('Symbol');
-      const descIdx = headers.indexOf('Description');
-      const quantityIdx = headers.indexOf('Quantity');
-      const currentValueIdx = headers.indexOf('Current Value');
-      const costBasisIdx = headers.indexOf('Cost Basis Total');
-      const lastPriceIdx = headers.indexOf('Last Price');
-      const lastPriceChangeIdx = headers.indexOf('Last Price Change');
-      const gainLossDollarIdx = headers.indexOf('Total Gain/Loss Dollar');
-      const gainLossPercentIdx = headers.indexOf('Total Gain/Loss Percent');
-      const typeIdx = headers.indexOf('Type');
+      const getHeaderIndex = (headerName: string): number =>
+        headers.findIndex(h => h.trim().toLowerCase() === headerName.toLowerCase());
+
+      const symbolIdx = getHeaderIndex('Symbol');
+      const descIdx = getHeaderIndex('Description');
+      const quantityIdx = getHeaderIndex('Quantity');
+      const currentValueIdx = getHeaderIndex('Current Value');
+      const costBasisIdx = getHeaderIndex('Cost Basis Total');
+      const lastPriceIdx = getHeaderIndex('Last Price');
+      const lastPriceChangeIdx = getHeaderIndex('Last Price Change');
+      const gainLossDollarIdx = getHeaderIndex('Total Gain/Loss Dollar');
+      const gainLossPercentIdx = getHeaderIndex('Total Gain/Loss Percent');
+      const typeIdx = getHeaderIndex('Type');
 
       const symbol = values[symbolIdx]?.trim();
       const description = values[descIdx]?.trim();
